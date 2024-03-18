@@ -13,17 +13,18 @@ router.post('/signin', userValidation, async (req, res) => {
     try {
         connection = await pool.getConnection();
         const results = await connection.query('SELECT * FROM users WHERE username = ? AND password = ?', [req.body.username, req.body.password]); 
-        console.log(results);
         if(results.length === 0) {
             res.json(jsonResponse(404, 'Not Found', 'User not found', true));
         }
-        // create a JWT token and send it to the user
-        const payload = {
-            username: req.body.username,
-            id: results[0].id
+        else {
+            // create a JWT token and send it to the user
+            const payload = {
+                username: req.body.username,
+                id: results[0].id
+            }
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+            res.json(jsonResponse(200, 'OK', { token }));
         }
-        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-        res.json(jsonResponse(200, 'OK', { token }));
     } catch (error) {
         console.error(error);
         res.json(jsonResponse(500, 'Internal Server Error', error, true));
