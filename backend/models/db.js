@@ -5,8 +5,7 @@ const pool = mariadb.createPool({
     host: DB_HOST,
     user: DB_USER,
     password: DB_PASSWORD,
-    database: DB_DATABASE,
-    connectionLimit: 5 // Adjust this limit based on your application's needs
+    database: DB_DATABASE, // Adjust this limit based on your application's needs
 });
 
 export default pool;
